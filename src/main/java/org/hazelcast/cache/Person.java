@@ -1,19 +1,12 @@
 package org.hazelcast.cache;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.time.LocalDate;
 
-@Entity
-@Cache(region = "database", usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Person {
 
     @Id
-    @GeneratedValue
     private Long id;
     private String firstName;
     private String lastName;
