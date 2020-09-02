@@ -1,13 +1,1 @@
-logging.level.org.hibernate.SQL: DEBUG
-spring:
-  jpa:
-    open-in-view: false
-    properties:
-      hibernate:
-        generate_statistics: true
-        cache:
-          use_second_level_cache: true
-          use_query_cache: true
-          region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
-          hazelcast.instance_name: hazelcastInstance
-      javax.persistence.sharedCache.mode: ENABLE_SELECTIVE
+logging.level.org.springframework.data.r2dbc: DEBUG
