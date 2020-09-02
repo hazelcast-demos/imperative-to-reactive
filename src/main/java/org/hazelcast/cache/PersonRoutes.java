@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -23,11 +24,13 @@ public class PersonRoutes {
         }
 
         public Mono<ServerResponse> getAll(ServerRequest req) {
-            return ok().bodyValue(repository.findAll(Sort.by("lastName", "firstName")));
+            var all = repository.findAll(Sort.by("lastName", "firstName"));
+            return ok().body(fromPublisher(all, Person.class));
         }
 
         public Mono<ServerResponse> getOne(ServerRequest req) {
-            return ok().bodyValue(repository.findById(Long.valueOf(req.pathVariable("id"))));
+            var mono = repository.findById(Long.valueOf(req.pathVariable("id")));
+            return ok().body(fromPublisher(mono, Person.class));
         }
     }
 
