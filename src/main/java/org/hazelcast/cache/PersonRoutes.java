@@ -3,12 +3,13 @@ package org.hazelcast.cache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.ServerRequest;
-import org.springframework.web.servlet.function.ServerResponse;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
-import static org.springframework.web.servlet.function.RouterFunctions.route;
-import static org.springframework.web.servlet.function.ServerResponse.ok;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Configuration
 public class PersonRoutes {
@@ -21,12 +22,12 @@ public class PersonRoutes {
             this.repository = repository;
         }
 
-        public ServerResponse getAll(ServerRequest req) {
-            return ok().body(repository.findAll(Sort.by("lastName", "firstName")));
+        public Mono<ServerResponse> getAll(ServerRequest req) {
+            return ok().bodyValue(repository.findAll(Sort.by("lastName", "firstName")));
         }
 
-        public ServerResponse getOne(ServerRequest req) {
-            return ok().body(repository.findById(Long.valueOf(req.pathVariable("id"))));
+        public Mono<ServerResponse> getOne(ServerRequest req) {
+            return ok().bodyValue(repository.findById(Long.valueOf(req.pathVariable("id"))));
         }
     }
 
