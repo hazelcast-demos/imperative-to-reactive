@@ -36,13 +36,11 @@ public class PersonRoutes {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> getAll(PersonHandler handler) {
-        return route().GET("/person", handler::getAll).build();
-    }
-
-
-    @Bean
-    public RouterFunction<ServerResponse> getOne(PersonHandler handler) {
-        return route().GET("/person/{id}", handler::getOne).build();
+    public RouterFunction<ServerResponse> routes(PersonHandler handler) {
+        return route().path(
+            "/person", builder -> builder
+                .GET("/", handler::getAll)
+                .GET("/{id}", handler::getOne)
+        ).build();
     }
 }
