@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+  - package-ecosystem: "maven"
+    directory: "/"
+    target-branch: "kotlin"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
