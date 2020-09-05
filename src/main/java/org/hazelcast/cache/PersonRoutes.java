@@ -19,19 +19,19 @@ public class PersonRoutes {
 
     public static class PersonHandler {
 
-        private final PersonRepository repository;
+        private final CachingService service;
 
-        public PersonHandler(PersonRepository repository) {
-            this.repository = repository;
+        public PersonHandler(CachingService service) {
+            this.service = service;
         }
 
         public Mono<ServerResponse> getAll(ServerRequest req) {
-            var all = repository.findAll(Sort.by("lastName", "firstName"));
+            var all = service.findAll(Sort.by("lastName", "firstName"));
             return ok().body(fromPublisher(all, Person.class));
         }
 
         public Mono<ServerResponse> getOne(ServerRequest req) {
-            var mono = repository
+            var mono = service
                     .findById(Long.valueOf(req.pathVariable("id")))
                     .switchIfEmpty(Mono.error(() -> new ResponseStatusException(NOT_FOUND)));
             return ok().body(fromPublisher(mono, Person.class));
@@ -39,8 +39,8 @@ public class PersonRoutes {
     }
 
     @Bean
-    public PersonHandler handler(PersonRepository repository) {
-        return new PersonHandler(repository);
+    public PersonHandler handler(CachingService service) {
+        return new PersonHandler(service);
     }
 
     @Bean
