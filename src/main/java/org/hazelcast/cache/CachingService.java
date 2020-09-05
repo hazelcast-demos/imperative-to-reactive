@@ -4,8 +4,12 @@ import com.hazelcast.map.IMap;
 import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.Logger;
+import reactor.util.Loggers;
 
 public class CachingService {
+
+    private static final Logger LOGGER = Loggers.getLogger(CachingService.class);
 
     private final IMap<Long, Person> cache;
     private final PersonRepository repository;
@@ -16,23 +20,20 @@ public class CachingService {
     }
 
     Mono<Person> findById(Long id) {
-        var person = cache.get(id);
-        if (person == null) {
-            System.out.println("Person with id " + id + " not found in cache");
-            var mono = repository.findById(id);
-            return mono.doOnSuccess(p -> {
-                cache.put(id, p);
-                System.out.println("Person with id " + id + " put in cache");
-            });
-        } else {
-            System.out.println("Person with id " + id + " found in cache");
-            return Mono.just(person);
-        }
+        return Mono.fromCompletionStage(() -> cache.getAsync(id))
+                .doOnNext(p -> LOGGER.info("Person with id " + p.getId() + " found in cache"))
+                .switchIfEmpty(repository
+                        .findById(id)
+                        .doOnNext(p -> {
+                            cache.putAsync(p.getId(), p);
+                            LOGGER.info("Person with id " + p.getId() + " set in cache");
+                        })
+                );
     }
 
     Flux<Person> findAll(Sort sort) {
         return repository
                 .findAll(sort)
-                .doOnNext(p -> cache.put(p.getId(), p));
+                .doOnNext(p -> cache.putAsync(p.getId(), p));
     }
 }
