@@ -2,9 +2,10 @@ package org.hazelcast.cache;
 
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Person {
+public class Person implements Serializable {
 
     @Id
     private Long id;
