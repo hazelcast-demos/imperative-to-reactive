@@ -16,23 +16,16 @@ public class CachingService {
     }
 
     Mono<Person> findById(Long id) {
-        var person = cache.get(id);
-        if (person == null) {
-            System.out.println("Person with id " + id + " not found in cache");
-            var mono = repository.findById(id);
-            return mono.doOnSuccess(p -> {
-                cache.put(id, p);
-                System.out.println("Person with id " + id + " put in cache");
-            });
-        } else {
-            System.out.println("Person with id " + id + " found in cache");
-            return Mono.just(person);
-        }
+        return Mono.fromCompletionStage(() -> cache.getAsync(id))
+            .switchIfEmpty(repository
+                    .findById(id)
+                    .doOnNext(p -> cache.putAsync(p.getId(), p))
+            );
     }
 
     Flux<Person> findAll(Sort sort) {
         return repository
                 .findAll(sort)
-                .doOnNext(p -> cache.put(p.getId(), p));
+                .doOnNext(p -> cache.putAsync(p.getId(), p));
     }
 }
