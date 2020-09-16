@@ -8,6 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.util.StreamUtils;
+import reactor.blockhound.BlockHound;
 
 import java.io.InputStream;
 
@@ -34,6 +35,7 @@ public class ImperativeToReactiveApplication {
     }
 
     public static void main(String[] args) {
+        BlockHound.install();
         SpringApplication.run(ImperativeToReactiveApplication.class, args);
     }
 }
