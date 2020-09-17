@@ -6,8 +6,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -29,7 +31,9 @@ public class PersonRoutes {
         }
 
         public Mono<ServerResponse> getOne(ServerRequest req) {
-            var mono = repository.findById(Long.valueOf(req.pathVariable("id")));
+            var mono = repository
+                    .findById(Long.valueOf(req.pathVariable("id")))
+                    .switchIfEmpty(Mono.error(() -> new ResponseStatusException(NOT_FOUND)));
             return ok().body(fromPublisher(mono, Person.class));
         }
     }
