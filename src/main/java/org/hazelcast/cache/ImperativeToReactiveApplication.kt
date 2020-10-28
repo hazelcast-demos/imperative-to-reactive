@@ -8,6 +8,7 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 import org.springframework.util.StreamUtils
+import reactor.blockhound.BlockHound
 
 
 @SpringBootApplication
@@ -30,5 +31,9 @@ class ImperativeToReactiveApplication {
 }
 
 fun main() {
+    BlockHound.builder()
+        .with {
+            it.allowBlockingCallsInside("RandomAccessFile", "readBytes")
+        }.install()
     SpringApplication.run(ImperativeToReactiveApplication::class.java)
 }
