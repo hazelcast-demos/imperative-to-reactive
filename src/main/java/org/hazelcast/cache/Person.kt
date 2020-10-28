@@ -1,16 +1,14 @@
 package org.hazelcast.cache
 
-import org.hibernate.annotations.Cache
-import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Sort
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.data.repository.reactive.ReactiveSortingRepository
+import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import org.springframework.web.reactive.function.server.router
+import reactor.core.publisher.Mono
 import java.time.LocalDate
-import javax.persistence.*
 
 
 @Configuration
@@ -25,17 +23,22 @@ class PersonRoutes {
 }
 
 class PersonHandler(private val repository: PersonRepository) {
-    fun getAll(req: ServerRequest) = ok().bodyValue(repository.findAll(Sort.by("lastName", "firstName")))
-    fun getOne(req: ServerRequest) = ok().bodyValue(repository.findById(req.pathVariable("id").toLong()))
+
+    fun getAll(req: ServerRequest): Mono<ServerResponse> {
+        val flux = repository.findAll(Sort.by("lastName", "firstName"))
+        return ok().body(flux)
+    }
+
+    fun getOne(req: ServerRequest): Mono<ServerResponse> {
+        val mono = repository.findById(req.pathVariable("id").toLong())
+        return ok().body(mono)
+    }
 }
 
-interface PersonRepository : JpaRepository<Person?, Long?>
+interface PersonRepository : ReactiveSortingRepository<Person, Long>
 
-@Entity
-@Cache(region = "database", usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-class Person(
+class Person (
     @Id
-    @GeneratedValue
     val id: Long,
     var firstName: String,
     var lastName: String,
