@@ -3,26 +3,25 @@ package org.hazelcast.cache
 import com.hazelcast.map.IMap
 import org.springframework.data.domain.Sort
 import reactor.core.publisher.Mono
+import reactor.util.Loggers
 
 
 class CachingService(private val cache: IMap<Long, Person>, private val repository: PersonRepository) {
 
-    fun findById(id: Long): Mono<Person> {
-        val person = cache[id]
-        return if (person == null) {
-            println("Person with id $id not found in cache")
-            val mono = repository.findById(id)
-            mono.doOnSuccess {
-                cache[id] = it
-                println("Person with id $id put in cache")
-            }
-        } else {
-            println("Person with id $id found in cache")
-            Mono.just(person)
-        }
-    }
+    private val logger = Loggers.getLogger(CachingService::class.java)
+
+    fun findById(id: Long) = Mono.fromCompletionStage { cache.getAsync(id) }
+        .doOnNext { logger.info("Person with id $id found in cache") }
+        .switchIfEmpty(
+            repository
+                .findById(id)
+                .doOnNext {
+                    cache.putAsync(it.id, it)
+                    logger.info("Person with id $id set in cache")
+                }
+        )
 
     fun findAll(sort: Sort) = repository
         .findAll(sort)
-        .doOnNext { cache[it.id] = it }
+        .doOnNext { cache.putAsync(it.id, it) }
 }
