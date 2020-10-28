@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.web.servlet.function.RouterFunctions.route
 import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
+import org.springframework.web.servlet.function.router
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -17,17 +17,11 @@ import javax.persistence.*
 class PersonRoutes {
 
     @Bean
-    fun handler(repository: PersonRepository) = PersonHandler(repository)
-
-    @Bean
-    fun getAll(handler: PersonHandler) = route()
-        .GET("/person", handler::getAll)
-        .build()
-
-    @Bean
-    fun getOne(handler: PersonHandler) = route()
-        .GET("/person/{id}", handler::getOne)
-        .build()
+    fun router(repository: PersonRepository) = router {
+        val handler = PersonHandler(repository)
+        GET("/person", handler::getAll)
+        GET("/person/{id}", handler::getOne)
+    }
 }
 
 class PersonHandler(private val repository: PersonRepository) {
