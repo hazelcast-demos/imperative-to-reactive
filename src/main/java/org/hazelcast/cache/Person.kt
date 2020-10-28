@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.web.servlet.function.RouterFunctions.route
+import org.springframework.web.servlet.function.ServerRequest
 import org.springframework.web.servlet.function.ServerResponse.ok
 import java.time.LocalDate
 import javax.persistence.*
@@ -16,16 +17,22 @@ import javax.persistence.*
 class PersonRoutes {
 
     @Bean
-    fun getAll(repository: PersonRepository) = route()
-        .GET("/person") {
-            ok().body(repository.findAll(Sort.by("lastName", "firstName")))
-        }.build()
+    fun handler(repository: PersonRepository) = PersonHandler(repository)
 
     @Bean
-    fun getOne(repository: PersonRepository) = route()
-        .GET("/person/{id}") {
-            req -> ok().body(repository.findById(req.pathVariable("id").toLong()))
-        }.build()
+    fun getAll(handler: PersonHandler) = route()
+        .GET("/person", handler::getAll)
+        .build()
+
+    @Bean
+    fun getOne(handler: PersonHandler) = route()
+        .GET("/person/{id}", handler::getOne)
+        .build()
+}
+
+class PersonHandler(private val repository: PersonRepository) {
+    fun getAll(req: ServerRequest) = ok().body(repository.findAll(Sort.by("lastName", "firstName")))
+    fun getOne(req: ServerRequest) = ok().body(repository.findById(req.pathVariable("id").toLong()))
 }
 
 interface PersonRepository : JpaRepository<Person?, Long?>
