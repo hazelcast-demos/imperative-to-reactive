@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.reactive.ReactiveSortingRepository
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 
@@ -30,7 +32,9 @@ class PersonHandler(private val repository: PersonRepository) {
     }
 
     fun getOne(req: ServerRequest): Mono<ServerResponse> {
-        val mono = repository.findById(req.pathVariable("id").toLong())
+        val mono = repository
+            .findById(req.pathVariable("id").toLong())
+            .switchIfEmpty(Mono.error { ResponseStatusException(NOT_FOUND) })
         return ok().body(mono)
     }
 }
