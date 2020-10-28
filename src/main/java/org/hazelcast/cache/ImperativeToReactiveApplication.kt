@@ -1,5 +1,7 @@
 package org.hazelcast.cache
 
+import com.hazelcast.core.HazelcastInstance
+import com.hazelcast.map.IMap
 import io.r2dbc.spi.ConnectionFactory
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -27,6 +29,12 @@ class ImperativeToReactiveApplication {
                 }
             setDatabasePopulator(populator)
         }
+
+    @Bean
+    fun service(cache: IMap<Long, Person>, repository: PersonRepository) = CachingService(cache, repository)
+
+    @Bean
+    fun cache(instance: HazelcastInstance) = instance.getMap<Long, Person>("persons")
 }
 
 fun main() {
