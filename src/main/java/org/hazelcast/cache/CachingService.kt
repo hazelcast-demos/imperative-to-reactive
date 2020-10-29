@@ -1,8 +1,9 @@
 package org.hazelcast.cache
 
 import com.hazelcast.map.IMap
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.future.await
 import org.springframework.data.domain.Sort
-import reactor.core.publisher.Mono
 import reactor.util.Loggers
 
 
@@ -10,18 +11,21 @@ class CachingService(private val cache: IMap<Long, Person>, private val reposito
 
     private val logger = Loggers.getLogger(CachingService::class.java)
 
-    fun findById(id: Long) = Mono.fromCompletionStage { cache.getAsync(id) }
-        .doOnNext { logger.info("Person with id $id found in cache") }
-        .switchIfEmpty(
-            repository
-                .findById(id)
-                .doOnNext {
-                    cache.putAsync(it.id, it)
-                    logger.info("Person with id $id set in cache")
-                }
-        )
+    suspend fun findById(id: Long) = cache.getAsync(id).await()
+        .also {
+            if (it == null) logger.info("Person with id $id not found in cache")
+            else logger.info("Person with id $id found in cache")
+        } ?: repository.findById(id)
+            ?.also {
+                cache.putAsync(it.id, it)
+                logger.info("Person with id $id put in cache")
+            }
 
-    fun findAll(sort: Sort) = repository
+    suspend fun findAll(sort: Sort) = repository
         .findAll(sort)
-        .doOnNext { cache.putAsync(it.id, it) }
+        .also { flow ->
+            flow.collect {
+                cache.putAsync(it.id, it)
+            }
+        }
 }

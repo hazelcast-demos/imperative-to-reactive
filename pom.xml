@@ -43,9 +43,17 @@
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-jdk8</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.projectreactor.tools</groupId>
             <artifactId>blockhound</artifactId>
             <version>1.0.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-reactor</artifactId>
         </dependency>
     </dependencies>
     <build>

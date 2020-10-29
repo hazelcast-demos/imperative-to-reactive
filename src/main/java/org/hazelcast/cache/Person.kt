@@ -4,12 +4,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.annotation.Id
 import org.springframework.data.domain.Sort
-import org.springframework.data.repository.reactive.ReactiveSortingRepository
-import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.data.repository.kotlin.CoroutineSortingRepository
 import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.ServerResponse.notFound
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import org.springframework.web.server.ResponseStatusException
-import reactor.core.publisher.Mono
 import java.io.Serializable
 import java.time.LocalDate
 
@@ -18,7 +16,7 @@ import java.time.LocalDate
 class PersonRoutes {
 
     @Bean
-    fun router(service: CachingService) = router {
+    fun router(service: CachingService) = coRouter {
         val handler = PersonHandler(service)
         GET("/person", handler::getAll)
         GET("/person/{id}", handler::getOne)
@@ -27,22 +25,21 @@ class PersonRoutes {
 
 class PersonHandler(private val service: CachingService) {
 
-    fun getAll(req: ServerRequest): Mono<ServerResponse> {
-        val flux = service.findAll(Sort.by("lastName", "firstName"))
-        return ok().body(flux)
+    suspend fun getAll(req: ServerRequest): ServerResponse {
+        val flow = service.findAll(Sort.by("lastName", "firstName"))
+        return ok().bodyAndAwait(flow)
     }
 
-    fun getOne(req: ServerRequest): Mono<ServerResponse> {
-        val mono = service
-            .findById(req.pathVariable("id").toLong())
-            .switchIfEmpty(Mono.error { ResponseStatusException(NOT_FOUND) })
-        return ok().body(mono)
+    suspend fun getOne(req: ServerRequest): ServerResponse {
+        val person = service.findById(req.pathVariable("id").toLong())
+        return if (person == null) notFound().buildAndAwait()
+        else ok().bodyValueAndAwait(person)
     }
 }
 
-interface PersonRepository : ReactiveSortingRepository<Person, Long>
+interface PersonRepository : CoroutineSortingRepository<Person, Long>
 
-class Person (
+class Person(
     @Id
     val id: Long,
     var firstName: String,
