@@ -56,6 +56,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <env>
+                            <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                        </env>
+                    </image>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -90,4 +97,45 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.experimental</groupId>
+                        <artifactId>spring-aot-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <executions>
+                            <execution>
+                                <id>generate</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.experimental</groupId>
+                    <artifactId>spring-native</artifactId>
+                    <version>0.9.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+    <repositories>
+        <repository>
+            <id>spring-release</id>
+            <url>https://repo.spring.io/release</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-release</id>
+            <url>https://repo.spring.io/release</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
