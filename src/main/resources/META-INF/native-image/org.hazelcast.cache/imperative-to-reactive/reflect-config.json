@@ -54,5 +54,8 @@
   "allDeclaredMethods":true,
   "allPublicMethods":true,
   "allDeclaredConstructors":true
+},
+{
+  "name":"org.springframework.data.domain.Sort"
 }
 ]
