@@ -15,19 +15,37 @@
   ]
 },
 {
-  "name":"com.sun.org.apache.xpath.internal.functions.FuncNot",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "name":"com.hazelcast.instance.impl.DefaultNodeExtension",
+  "methods":[{"name":"<init>","parameterTypes":["com.hazelcast.instance.impl.Node"] }]
 },
 {
-  "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "name":"com.hazelcast.internal.util.counters.SwCounter$UnsafeSwCounter",
+  "fields":[{"name":"value", "allowUnsafeAccess":true}]
 },
 {
-  "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "name":"com.hazelcast.config.ExecutorConfig",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] },
+    {"name":"<init>","parameterTypes":["com.hazelcast.config.ExecutorConfig"] }
+  ]
 },
 {
-  "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "name":"com.hazelcast.config.MapConfig",
+  "methods":[
+    {"name":"<init>","parameterTypes":[] },
+    {"name":"<init>","parameterTypes":["com.hazelcast.config.MapConfig"] }
+  ]
+},
+{
+  "name":"java.time.LocalDate"
+},
+{
+  "name":"java.lang.Iterable",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"kotlinx.coroutines.flow.Flow"
 }
 ]

@@ -1,5 +1,8 @@
 {
-"bundles":[
-  {"name":"com.sun.org.apache.xml.internal.serializer.XMLEntities"}
-]
+"resources":{
+  "includes":[
+    {"pattern":"hazelcast.yaml"},
+    {"pattern":"schema.sql"}
+  ]}
 }
+
