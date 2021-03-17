@@ -1,0 +1,33 @@
+[
+{
+  "name":"org.springframework.boot.autoconfigure.r2dbc.ConnectionFactoryConfigurations$PooledConnectionFactoryCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.hazelcast.instance.GeneratedBuildProperties",
+  "fields":[
+    {"name":"BUILD"},
+    {"name":"COMMIT_ID"},
+    {"name":"DISTRIBUTION"},
+    {"name":"REVISION"},
+    {"name":"SERIALIZATION_VERSION"},
+    {"name":"VERSION"}
+  ]
+},
+{
+  "name":"com.sun.org.apache.xpath.internal.functions.FuncNot",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.SchemaDVFactoryImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+}
+]
