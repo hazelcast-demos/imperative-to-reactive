@@ -1,0 +1,14 @@
+[
+{
+  "name":"org.hazelcast.cache.Person"
+},
+{
+  "name":"java.time.LocalDate"
+},
+{
+  "name":"java.lang.String"
+},
+{
+  "name":"java.time.Ser"
+}
+]

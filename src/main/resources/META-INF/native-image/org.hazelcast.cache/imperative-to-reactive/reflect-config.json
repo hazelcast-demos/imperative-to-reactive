@@ -47,5 +47,12 @@
 },
 {
   "name":"kotlinx.coroutines.flow.Flow"
+},
+{
+  "name":"org.hazelcast.cache.Person",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
 }
 ]
