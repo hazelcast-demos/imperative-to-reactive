@@ -13,7 +13,7 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <java.version>14</java.version>
-        <kotlin.version>1.5.20</kotlin.version>
+        <kotlin.version>1.8.20</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
